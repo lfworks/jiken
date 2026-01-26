@@ -1,6 +1,6 @@
 # Python Project Template
 
-[![CI](https://github.com/lfworks/python-project-template/actions/workflows/ci.yml/badge.svg)](https://github.com/lfworks/python-project-template/actions/workflows/ci.yml)
+[![CI](https://github.com/lfworks/pyreinfolib/actions/workflows/ci.yml/badge.svg)](https://github.com/lfworks/pyreinfolib/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 
 モダンなPythonプロジェクトテンプレート。PyPI公開を想定した構造になっています。
@@ -32,8 +32,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/lfworks/python-project-template.git
-cd python-project-template
+git clone https://github.com/lfworks/pyreinfolib.git
+cd pyreinfolib
 
 # 依存関係をインストール
 uv sync --all-extras
@@ -77,7 +77,7 @@ make clean
 ├── scripts/
 │   └── setup.sh            # セットアップスクリプト
 ├── src/
-│   └── python_project_template/
+│   └── pyreinfolib/
 │       ├── __init__.py
 │       ├── core.py         # メインコード
 │       └── py.typed        # 型情報マーカー
@@ -100,7 +100,7 @@ make clean
 
 ```bash
 # テンプレートをクローン
-git clone https://github.com/lfworks/python-project-template.git my-new-project
+git clone https://github.com/lfworks/pyreinfolib.git my-new-project
 cd my-new-project
 
 # セットアップウィザードを実行
@@ -140,7 +140,7 @@ GitHubで「Use this template」ボタンを使用するか、手動でクロー
 
 ```bash
 # 新しいプロジェクトとしてクローン
-git clone https://github.com/lfworks/python-project-template.git my-new-project
+git clone https://github.com/lfworks/pyreinfolib.git my-new-project
 cd my-new-project
 
 # リモートURLを変更
@@ -149,10 +149,10 @@ git remote set-url origin https://github.com/your-username/my-new-project.git
 
 #### 2. プロジェクト名を変更
 
-以下のファイル内の `python-project-template` と `python_project_template` を自分のプロジェクト名に置換：
+以下のファイル内の `pyreinfolib` と `pyreinfolib` を自分のプロジェクト名に置換：
 
 - `pyproject.toml`
-- `src/python_project_template/` ディレクトリ名
+- `src/pyreinfolib/` ディレクトリ名
 - `README.md`
 - テストファイル内のimport文
 

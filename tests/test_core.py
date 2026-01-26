@@ -2,7 +2,7 @@
 
 import pytest  # noqa: F401
 
-from python_project_template.core import add, greet
+from pyreinfolib.core import add, greet
 
 
 def test_greet() -> None:
