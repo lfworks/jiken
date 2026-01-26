@@ -1,0 +1,25 @@
+# .github/CODEOWNERS
+#
+# このファイルは、コードレビューの承認者を定義します。
+# ブランチ保護ルールで "Require review from Code Owners" を有効にすると、
+# ここで指定されたオーナーの承認がないとマージできなくなります。
+#
+# 詳細: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# デフォルトオーナー（すべてのファイル）
+* @k0tk267
+
+# プロジェクト設定ファイル
+pyproject.toml @k0tk267
+.python-version @k0tk267
+
+# CI/CD設定
+.github/workflows/* @k0tk267
+.github/CODEOWNERS @k0tk267
+
+# YAML設定ファイル
+*.yml @k0tk267
+*.yaml @k0tk267
+
+# Git設定
+.gitignore @k0tk267
