@@ -1,255 +1,223 @@
-# Python Project Template
+# pyreinfolib
 
 [![CI](https://github.com/lfworks/pyreinfolib/actions/workflows/ci.yml/badge.svg)](https://github.com/lfworks/pyreinfolib/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 
-モダンなPythonプロジェクトテンプレート。PyPI公開を想定した構造になっています。
+Python library for accessing MLIT (Ministry of Land, Infrastructure, Transport and Tourism) Real Estate Transaction Price Information API.
 
-## 特徴
+## Features
 
-このテンプレートには以下のツールが設定済みです：
+- **Simple API**: Clean, intuitive interface for querying real estate transaction data
+- **Zero external dependencies**: Built using Python standard library only
+- **Type-safe**: Full type hints for better IDE support and code quality
+- **Bilingual support**: Retrieve data in English or Japanese
+- **Well-tested**: Comprehensive test coverage with unit tests
 
-- **[uv](https://github.com/astral-sh/uv)**: 高速なPythonパッケージマネージャー
-- **[ruff](https://github.com/astral-sh/ruff)**: 高速なlinter/formatter
-- **[ty](https://github.com/astral-sh/ty)**: Astral製の型チェッカー
-- **[vulture](https://github.com/jendrikseipp/vulture)**: デッドコード検出ツール
-- **pytest**: テストフレームワーク（カバレッジ測定付き）
-- **GitHub Actions**: CI/CD（format, lint, type check, test, dead code detection）
-
-## クイックスタート
-
-### 前提条件
-
-- Python 3.11以上
-- [uv](https://github.com/astral-sh/uv)のインストール
+## Installation
 
 ```bash
-# uvのインストール（まだの場合）
-curl -LsSf https://astral.sh/uv/install.sh | sh
+pip install pyreinfolib
 ```
 
-### セットアップ
+Or using [uv](https://github.com/astral-sh/uv):
 
 ```bash
-# リポジトリをクローン
+uv pip install pyreinfolib
+```
+
+## Quick Start
+
+### Prerequisites
+
+You need an API key from MLIT to use this library. Visit [MLIT Real Estate Information Library](https://www.reinfolib.mlit.go.jp/) to obtain your API key.
+
+### Basic Usage
+
+```python
+from pyreinfolib import ReinfoLibClient, SearchCondition
+
+# Initialize client with your API key
+client = ReinfoLibClient(api_key="your-api-key-here")
+
+# Search for transactions in Tokyo (area code: 13) in 2024 Q1
+condition = SearchCondition(
+    year=2024,
+    area="13",      # Tokyo prefecture code
+    quarter=1,      # First quarter
+    language="en"   # English response (default)
+)
+
+# Fetch transaction data
+transactions = client.search_transactions(condition)
+
+# Analyze the data
+for tx in transactions:
+    print(f"Price: ¥{tx.transaction_price:,}")
+    print(f"Area: {tx.area} m²")
+    print(f"Location: {tx.prefecture}, {tx.city}")
+    print(f"Type: {tx.property_type}")
+    print("---")
+```
+
+### Search with City Code
+
+```python
+# Search for transactions in Chiyoda-ku, Tokyo (city code: 13101)
+condition = SearchCondition(
+    year=2024,
+    city="13101",
+    language="ja"   # Japanese response
+)
+
+transactions = client.search_transactions(condition)
+```
+
+## API Reference
+
+### `ReinfoLibClient`
+
+Main client for accessing the API.
+
+#### Methods
+
+- `search_transactions(condition: SearchCondition) -> list[Transaction]`
+  - Search real estate transactions based on conditions
+  - Returns a list of `Transaction` objects
+
+### `SearchCondition`
+
+Search parameters for querying transaction data.
+
+#### Parameters
+
+- `year` (int, required): Transaction year
+- `area` (str, optional): Prefecture code (2 digits)
+- `city` (str, optional): City/municipality code (5 digits)
+- `quarter` (int, optional): Quarter (1-4)
+- `language` (str, optional): Response language "ja" or "en" (default: "en")
+
+**Note:** At least one of `area` or `city` must be specified.
+
+### `Transaction`
+
+Real estate transaction data.
+
+#### Attributes
+
+**Price Information:**
+- `transaction_price` (int): Total transaction price in JPY
+- `area` (float): Area in square meters
+- `unit_price` (float | None): Unit price per tsubo
+
+**Location:**
+- `prefecture` (str): Prefecture name
+- `city` (str): City/ward name
+- `district` (str | None): District name
+
+**Property Details:**
+- `building_year` (int | None): Year of construction
+- `property_type` (str): Property type (e.g., "Residential Land", "Apartment")
+- `structure` (str | None): Building structure (e.g., "RC", "Wood", "Steel")
+
+**Regulatory Information:**
+- `floor_area_ratio` (float | None): Floor area ratio (%)
+- `building_coverage` (float | None): Building coverage ratio (%)
+- `frontage_road_width` (float | None): Width of frontage road in meters
+
+**Metadata:**
+- `transaction_period` (str): Transaction period (e.g., "2024Q1")
+
+### Exceptions
+
+All exceptions inherit from `ReinfoLibError`:
+
+- `ReinfoLibAuthError`: Authentication failed (401)
+- `ReinfoLibRequestError`: Invalid request parameters (400)
+- `ReinfoLibAPIError`: General API error
+
+## Use Cases
+
+This library is ideal for:
+
+- **Real estate market analysis**: Analyze transaction trends and pricing patterns
+- **Investment research**: Identify undervalued properties in specific areas
+- **Academic research**: Study real estate market dynamics in Japan
+- **Data science projects**: Build machine learning models for price prediction
+
+## Development
+
+### Setup
+
+```bash
+# Clone the repository
 git clone https://github.com/lfworks/pyreinfolib.git
 cd pyreinfolib
 
-# 依存関係をインストール
+# Install dependencies with uv
 uv sync --all-extras
 ```
 
-### 開発
+### Running Tests
 
 ```bash
-# フォーマット
+# Run all tests
+make test
+
+# Run with coverage
+uv run pytest --cov=src/pyreinfolib
+```
+
+### Code Quality
+
+```bash
+# Format code
 make format
 
 # Lint
 make lint
 
-# 型チェック
+# Type check
 make type-check
 
-# テスト実行
-make test
-
-# デッドコード検出
+# Dead code detection
 make deadcode
 
-# YAML Lint
-make yamllint
-
-# すべてのチェックを実行
+# Run all checks
 make check
-
-# クリーンアップ
-make clean
 ```
 
-## プロジェクト構造
+## Prefecture and City Codes
 
-```
-.
-├── .github/
-│   └── workflows/
-│       └── ci.yml          # CI/CD設定
-├── scripts/
-│   └── setup.sh            # セットアップスクリプト
-├── src/
-│   └── pyreinfolib/
-│       ├── __init__.py
-│       ├── core.py         # メインコード
-│       └── py.typed        # 型情報マーカー
-├── tests/
-│   ├── __init__.py
-│   └── test_core.py        # テストコード
-├── .gitignore
-├── .python-version         # Pythonバージョン指定
-├── .yamllint               # yamllint設定
-├── Makefile                # 開発用コマンド
-├── README.md
-└── pyproject.toml          # プロジェクト設定
-```
+Common prefecture codes:
+- `13`: Tokyo
+- `27`: Osaka
+- `14`: Kanagawa
+- `23`: Aichi
+- `40`: Fukuoka
 
-## このテンプレートの使い方
+For a complete list of codes, refer to the [MLIT documentation](https://www.reinfolib.mlit.go.jp/help/apiManual/).
 
-### 方法1: セットアップコマンドを使用（推奨）
+## Contributing
 
-最も簡単な方法は、インタラクティブなセットアップコマンドを使用することです：
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-```bash
-# テンプレートをクローン
-git clone https://github.com/lfworks/pyreinfolib.git my-new-project
-cd my-new-project
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-# セットアップウィザードを実行
-make setup
-```
+## License
 
-セットアップウィザードでは以下を対話形式で設定できます：
+MIT License - see LICENSE file for details
 
-1. **リモートURLの変更**: 新しいリポジトリのURLに変更
-2. **プロジェクト名の変更**: プロジェクト名とモジュール名を一括変更
-   - `pyproject.toml`
-   - `src/` ディレクトリ名
-   - `README.md`
-   - テストファイル内のimport文
-3. **カスタマイズ**: 不要なファイルの削除
-   - GitHub Actions ワークフロー
-   - CODEOWNERS
-   - CONTRIBUTING.md
-   - セットアップスクリプト自体
+## Links
 
-セットアップ完了後、以下のコマンドで開発を開始できます：
+- [MLIT Real Estate Information Library](https://www.reinfolib.mlit.go.jp/)
+- [API Documentation](https://www.reinfolib.mlit.go.jp/help/apiManual/)
+- [GitHub Repository](https://github.com/lfworks/pyreinfolib)
+- [Issue Tracker](https://github.com/lfworks/pyreinfolib/issues)
 
-```bash
-# 依存関係をインストール
-uv sync --all-extras
+## Acknowledgments
 
-# コードを書く
-# テストを書く
-# CI/CDが自動的に動作します
-```
-
-### 方法2: 手動でセットアップ
-
-GitHubで「Use this template」ボタンを使用するか、手動でクローン＆変更：
-
-#### 1. テンプレートから新規プロジェクトを作成
-
-```bash
-# 新しいプロジェクトとしてクローン
-git clone https://github.com/lfworks/pyreinfolib.git my-new-project
-cd my-new-project
-
-# リモートURLを変更
-git remote set-url origin https://github.com/your-username/my-new-project.git
-```
-
-#### 2. プロジェクト名を変更
-
-以下のファイル内の `pyreinfolib` と `pyreinfolib` を自分のプロジェクト名に置換：
-
-- `pyproject.toml`
-- `src/pyreinfolib/` ディレクトリ名
-- `README.md`
-- テストファイル内のimport文
-
-#### 3. カスタマイズ
-
-- `pyproject.toml`の`authors`、`description`などを更新
-- `README.md`をプロジェクトに合わせて更新
-
-#### 4. 開発を開始
-
-```bash
-# 依存関係をインストール
-uv sync --all-extras
-
-# コードを書く
-# テストを書く
-# CI/CDが自動的に動作します
-```
-
-## CI/CD
-
-GitHub Actionsで以下のチェックが自動実行されます：
-
-- **Format Check**: コードフォーマットの確認
-- **Lint**: コード品質チェック
-- **Type Check**: 型チェック（ty）
-- **Test**: テスト実行（Python 3.9-3.12）
-- **Dead Code Detection**: デッドコード検出
-
-## リポジトリセキュリティ設定
-
-### ブランチ保護ルール（Branch Protection Rules）
-
-**mainブランチに以下の保護ルールを設定することを強く推奨します：**
-
-#### 必須設定
-
-1. **Require a pull request before merging（マージ前にPRを必須にする）**
-   - ✅ 有効化
-   - ✅ Require approvals: 最低1人の承認が必要
-   - ✅ Dismiss stale pull request approvals when new commits are pushed
-
-2. **Require status checks to pass before merging（マージ前にステータスチェックを必須にする）**
-   - ✅ 有効化
-   - ✅ Require branches to be up to date before merging
-   - 必須チェック項目：
-     - `format` (CI)
-     - `lint` (CI)
-     - `type-check` (CI)
-     - `test` (CI)
-     - `deadcode` (CI)
-
-3. **Require conversation resolution before merging（マージ前にコメント解決を必須にする）**
-   - ✅ 有効化
-
-4. **Do not allow bypassing the above settings（上記設定のバイパスを許可しない）**
-   - ✅ 有効化（管理者であってもルールを守る）
-
-#### 推奨設定
-
-5. **Restrict who can push to matching branches（プッシュできるユーザーを制限）**
-   - mainブランチへの直接プッシュを禁止
-   - 特定のユーザー/チームのみ許可（必要に応じて）
-
-6. **Require linear history（リニアな履歴を必須にする）**
-   - マージコミットを防ぐ（Squash or Rebaseのみ許可）
-
-### CODEOWNERS設定
-
-`.github/CODEOWNERS`ファイルでコードレビューの承認者を設定できます。このテンプレートでは、すべてのファイルの変更に対してオーナーの承認が必要になるように設定されています。
-
-設定を有効化するには、ブランチ保護ルールで「Require review from Code Owners」を有効にしてください。
-
-## PyPIへの公開
-
-このテンプレートはPyPI公開を想定した構造になっています：
-
-```bash
-# ビルド
-uv build
-
-# PyPIへアップロード（testpypiで先にテスト推奨）
-uv publish --token <your-pypi-token>
-```
-
-## 貢献
-
-1. このリポジトリをフォーク
-2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add some amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
-
-## 参考リンク
-
-- [uv documentation](https://github.com/astral-sh/uv)
-- [ruff documentation](https://docs.astral.sh/ruff/)
-- [ty documentation](https://github.com/astral-sh/ty)
-- [vulture documentation](https://github.com/jendrikseipp/vulture)
-- [pytest documentation](https://docs.pytest.org/)
+This library provides access to data from the Ministry of Land, Infrastructure, Transport and Tourism (MLIT) of Japan.
