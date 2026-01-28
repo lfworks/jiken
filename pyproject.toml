@@ -1,7 +1,7 @@
 [project]
 name = "pyreinfolib"
 version = "0.1.0"
-description = "A modern Python project template with uv, ruff, ty, and vulture"
+description = "Python library for accessing MLIT Real Estate Transaction Price Information API"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -25,6 +25,7 @@ dev = [
     "vulture>=2.11",
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
+    "parameterized>=0.9.0",
     "yamllint>=1.35.0",
     "yamlfix>=1.16.0",
 ]
@@ -98,8 +99,7 @@ exclude_lines = [
 
 # Vulture configuration
 [tool.vulture]
-min_confidence = 0
-ignore_names = ["add"]  # Demo function in template
+min_confidence = 80
 
 # Ty configuration
 [tool.ty]
