@@ -5,7 +5,6 @@ from pyreinfolib.models import SearchCondition, Transaction
 
 
 class TestSearchCondition:
-
     def test_create_with_area(self) -> None:
         condition = SearchCondition(year=2024, area="13")
 
@@ -91,7 +90,6 @@ class TestSearchCondition:
 
 
 class TestTransaction:
-
     def test_create_transaction_with_all_fields(self) -> None:
         transaction = Transaction(
             transaction_price=50000000,

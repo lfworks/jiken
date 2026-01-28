@@ -10,7 +10,6 @@ from pyreinfolib.models import SearchCondition, Transaction
 
 
 class ReinfoLibClient:
-
     _API_BASE_URL = "https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001"
 
     def __init__(self, api_key: str) -> None:
