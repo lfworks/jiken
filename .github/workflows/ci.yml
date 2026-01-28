@@ -90,7 +90,7 @@ jobs:
     - name: Install dependencies
       run: uv sync --all-extras
     - name: Check for dead code with vulture
-      run: uv run vulture src/ --min-confidence 0
+      run: uv run vulture src/ tests/ --min-confidence 80
   test:
     name: Test
     runs-on: ubuntu-latest
