@@ -1,9 +1,11 @@
-# pyreinfolib
+# jiken
 
-[![CI](https://github.com/lfworks/pyreinfolib/actions/workflows/ci.yml/badge.svg)](https://github.com/lfworks/pyreinfolib/actions/workflows/ci.yml)
+[![CI](https://github.com/lfworks/jiken/actions/workflows/ci.yml/badge.svg)](https://github.com/lfworks/jiken/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 
-Python library for accessing MLIT (Ministry of Land, Infrastructure, Transport and Tourism) Real Estate Transaction Price Information API.
+**jiken** - Where 地 (ji/land) meets 検証 (kensho/verification).
+
+Verify land values with official data from Japan's MLIT (Ministry of Land, Infrastructure, Transport and Tourism). Python library for accessing MLIT Real Estate Transaction Price Information API.
 
 ## Features
 
@@ -16,13 +18,13 @@ Python library for accessing MLIT (Ministry of Land, Infrastructure, Transport a
 ## Installation
 
 ```bash
-pip install pyreinfolib
+pip install jiken
 ```
 
 Or using [uv](https://github.com/astral-sh/uv):
 
 ```bash
-uv pip install pyreinfolib
+uv pip install jiken
 ```
 
 ## Quick Start
@@ -34,7 +36,7 @@ You need an API key from MLIT to use this library. Visit [MLIT Real Estate Infor
 ### Basic Usage
 
 ```python
-from pyreinfolib import ReinfoLibClient, SearchCondition
+from jiken import ReinfoLibClient, SearchCondition
 
 # Initialize client with your API key
 client = ReinfoLibClient(api_key="your-api-key-here")
@@ -150,8 +152,8 @@ This library is ideal for:
 
 ```bash
 # Clone the repository
-git clone https://github.com/lfworks/pyreinfolib.git
-cd pyreinfolib
+git clone https://github.com/lfworks/jiken.git
+cd jiken
 
 # Install dependencies with uv
 uv sync --all-extras
@@ -164,7 +166,7 @@ uv sync --all-extras
 make test
 
 # Run with coverage
-uv run pytest --cov=src/pyreinfolib
+uv run pytest --cov=src/jiken
 ```
 
 ### Code Quality
@@ -215,8 +217,8 @@ MIT License - see LICENSE file for details
 
 - [MLIT Real Estate Information Library](https://www.reinfolib.mlit.go.jp/)
 - [API Documentation](https://www.reinfolib.mlit.go.jp/help/apiManual/)
-- [GitHub Repository](https://github.com/lfworks/pyreinfolib)
-- [Issue Tracker](https://github.com/lfworks/pyreinfolib/issues)
+- [GitHub Repository](https://github.com/lfworks/jiken)
+- [Issue Tracker](https://github.com/lfworks/jiken/issues)
 
 ## Acknowledgments
 

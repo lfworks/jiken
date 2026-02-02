@@ -5,8 +5,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from pyreinfolib.exceptions import ReinfoLibAPIError, ReinfoLibAuthError, ReinfoLibRequestError
-from pyreinfolib.models import SearchCondition, Transaction
+from jiken.exceptions import ReinfoLibAPIError, ReinfoLibAuthError, ReinfoLibRequestError
+from jiken.models import SearchCondition, Transaction
 
 
 class ReinfoLibClient:

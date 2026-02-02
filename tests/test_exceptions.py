@@ -1,6 +1,6 @@
 import pytest
 
-from pyreinfolib.exceptions import (
+from jiken.exceptions import (
     ReinfoLibAPIError,
     ReinfoLibAuthError,
     ReinfoLibError,

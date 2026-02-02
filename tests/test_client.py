@@ -8,9 +8,9 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from parameterized import parameterized
 
-from pyreinfolib.client import ReinfoLibClient
-from pyreinfolib.exceptions import ReinfoLibAPIError, ReinfoLibAuthError, ReinfoLibRequestError
-from pyreinfolib.models import SearchCondition
+from jiken.client import ReinfoLibClient
+from jiken.exceptions import ReinfoLibAPIError, ReinfoLibAuthError, ReinfoLibRequestError
+from jiken.models import SearchCondition
 
 
 class TestReinfoLibClient:
@@ -44,7 +44,7 @@ class TestReinfoLibClient:
         assert params["quarter"] == "1"
         assert params["language"] == "ja"
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_success(self, mock_urlopen: Mock) -> None:
         response_data = {"data": [{"TradePrice": "50000000"}]}
         mock_response = MagicMock()
@@ -62,7 +62,7 @@ class TestReinfoLibClient:
         assert result == response_data
         mock_urlopen.assert_called_once()
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_with_gzip(self, mock_urlopen: Mock) -> None:
         response_data = {"data": [{"TradePrice": "50000000"}]}
         compressed_data = gzip.compress(json.dumps(response_data).encode("utf-8"))
@@ -81,7 +81,7 @@ class TestReinfoLibClient:
 
         assert result == response_data
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_auth_error(self, mock_urlopen: Mock) -> None:
         mock_urlopen.side_effect = urllib.error.HTTPError(
             url="http://test.com", code=401, msg="Unauthorized", hdrs=Message(), fp=None
@@ -95,7 +95,7 @@ class TestReinfoLibClient:
 
         assert "Authentication failed" in str(exc_info.value)
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_request_error(self, mock_urlopen: Mock) -> None:
         mock_urlopen.side_effect = urllib.error.HTTPError(
             url="http://test.com", code=400, msg="Bad Request", hdrs=Message(), fp=None
@@ -116,7 +116,7 @@ class TestReinfoLibClient:
             (503, "Service Unavailable"),
         ]
     )
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_server_error(self, status_code: int, msg: str, mock_urlopen: Mock) -> None:
         mock_urlopen.side_effect = urllib.error.HTTPError(
             url="http://test.com", code=status_code, msg=msg, hdrs=Message(), fp=None
@@ -130,7 +130,7 @@ class TestReinfoLibClient:
 
         assert f"status {status_code}" in str(exc_info.value)
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_url_error(self, mock_urlopen: Mock) -> None:
         mock_urlopen.side_effect = urllib.error.URLError("Connection refused")
 
@@ -142,7 +142,7 @@ class TestReinfoLibClient:
 
         assert "Failed to connect to API" in str(exc_info.value)
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_fetch_data_invalid_json(self, mock_urlopen: Mock) -> None:
         mock_response = MagicMock()
         mock_response.read.return_value = b"invalid json"
@@ -280,7 +280,7 @@ class TestReinfoLibClient:
         assert transactions[0].transaction_price == 50000000
         assert transactions[1].transaction_price == 30000000
 
-    @patch("pyreinfolib.client.urlopen")
+    @patch("jiken.client.urlopen")
     def test_search_transactions_integration(self, mock_urlopen: Mock) -> None:
         response_data = {
             "data": [
