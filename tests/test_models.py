@@ -1,7 +1,7 @@
 import pytest
 from parameterized import parameterized
 
-from pyreinfolib.models import SearchCondition, Transaction
+from jiken.models import SearchCondition, Transaction
 
 
 class TestSearchCondition:
