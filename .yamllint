@@ -5,6 +5,7 @@ ignore: |
   .venv/
   venv/
   node_modules/
+  .github/workflows/claude.yml
 
 rules:
   line-length:
