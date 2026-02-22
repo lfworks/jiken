@@ -36,10 +36,10 @@ You need an API key from MLIT to use this library. Visit [MLIT Real Estate Infor
 ### Basic Usage
 
 ```python
-from jiken import ReinfoLibClient, SearchCondition
+from jiken import JikenClient, SearchCondition
 
 # Initialize client with your API key
-client = ReinfoLibClient(api_key="your-api-key-here")
+client = JikenClient(api_key="your-api-key-here")
 
 # Search for transactions in Tokyo (area code: 13) in 2024 Q1
 condition = SearchCondition(
@@ -76,7 +76,7 @@ transactions = client.search_transactions(condition)
 
 ## API Reference
 
-### `ReinfoLibClient`
+### `JikenClient`
 
 Main client for accessing the API.
 
@@ -131,11 +131,11 @@ Real estate transaction data.
 
 ### Exceptions
 
-All exceptions inherit from `ReinfoLibError`:
+All exceptions inherit from `JikenError`:
 
-- `ReinfoLibAuthError`: Authentication failed (401)
-- `ReinfoLibRequestError`: Invalid request parameters (400)
-- `ReinfoLibAPIError`: General API error
+- `JikenAuthError`: Authentication failed (401)
+- `JikenRequestError`: Invalid request parameters (400)
+- `JikenAPIError`: General API error
 
 ## Use Cases
 
