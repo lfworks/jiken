@@ -1,7 +1,7 @@
 import pytest
 from parameterized import parameterized
 
-from jiken.models import SearchCondition, Transaction
+from jiken.models import SearchCondition, TradePrice, Transaction
 
 
 class TestSearchCondition:
@@ -89,10 +89,53 @@ class TestSearchCondition:
         assert condition.language == language
 
 
+class TestTradePrice:
+    def test_as_jpy_formats_with_yen_symbol(self) -> None:
+        price = TradePrice(amount_jpy=50000000)
+
+        assert price.as_jpy() == "¥50,000,000"
+
+    def test_as_jpy_zero(self) -> None:
+        price = TradePrice(amount_jpy=0)
+
+        assert price.as_jpy() == "¥0"
+
+    @parameterized.expand(
+        [
+            # (amount_jpy, exchange_rate, expected)
+            (50000000, 150.0, "$333,333"),
+            (15000000, 150.0, "$100,000"),
+            (300000, 150.0, "$2,000"),
+            (50000000, 100.0, "$500,000"),
+        ]
+    )
+    def test_as_usd_converts_correctly(
+        self, amount_jpy: int, exchange_rate: float, expected: str
+    ) -> None:
+        price = TradePrice(amount_jpy=amount_jpy)
+
+        assert price.as_usd(exchange_rate) == expected
+
+    def test_format_ja_returns_jpy(self) -> None:
+        price = TradePrice(amount_jpy=50000000)
+
+        assert price.format(language="ja") == "¥50,000,000"
+
+    def test_format_en_returns_usd_with_default_rate(self) -> None:
+        price = TradePrice(amount_jpy=15000000)
+
+        assert price.format(language="en") == "$100,000"
+
+    def test_format_en_returns_usd_with_custom_rate(self) -> None:
+        price = TradePrice(amount_jpy=50000000)
+
+        assert price.format(language="en", exchange_rate=100.0) == "$500,000"
+
+
 class TestTransaction:
     def test_create_transaction_with_all_fields(self) -> None:
         transaction = Transaction(
-            transaction_price=50000000,
+            transaction_price=TradePrice(amount_jpy=50000000),
             area=100.5,
             unit_price=1500000.0,
             prefecture="Tokyo",
@@ -107,7 +150,7 @@ class TestTransaction:
             transaction_period="2024Q1",
         )
 
-        assert transaction.transaction_price == 50000000
+        assert transaction.transaction_price == TradePrice(amount_jpy=50000000)
         assert transaction.area == 100.5
         assert transaction.unit_price == 1500000.0
         assert transaction.prefecture == "Tokyo"
@@ -123,7 +166,7 @@ class TestTransaction:
 
     def test_create_transaction_with_optional_none(self) -> None:
         transaction = Transaction(
-            transaction_price=30000000,
+            transaction_price=TradePrice(amount_jpy=30000000),
             area=80.0,
             unit_price=None,
             prefecture="Osaka",
@@ -138,7 +181,7 @@ class TestTransaction:
             transaction_period="2024Q2",
         )
 
-        assert transaction.transaction_price == 30000000
+        assert transaction.transaction_price == TradePrice(amount_jpy=30000000)
         assert transaction.area == 80.0
         assert transaction.unit_price is None
         assert transaction.prefecture == "Osaka"
@@ -154,7 +197,7 @@ class TestTransaction:
 
     def test_transaction_price_per_area_calculation(self) -> None:
         transaction = Transaction(
-            transaction_price=50000000,
+            transaction_price=TradePrice(amount_jpy=50000000),
             area=100.0,
             unit_price=None,
             prefecture="Tokyo",
@@ -169,5 +212,5 @@ class TestTransaction:
             transaction_period="2024Q1",
         )
 
-        price_per_sqm = transaction.transaction_price / transaction.area
+        price_per_sqm = transaction.transaction_price.amount_jpy / transaction.area
         assert price_per_sqm == 500000.0

@@ -7,11 +7,12 @@ from jiken.exceptions import (
     JikenError,
     JikenRequestError,
 )
-from jiken.models import SearchCondition, Transaction
+from jiken.models import SearchCondition, TradePrice, Transaction
 
 __all__ = [
     "JikenClient",
     "SearchCondition",
+    "TradePrice",
     "Transaction",
     "JikenError",
     "JikenAuthError",

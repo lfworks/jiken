@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from jiken.exceptions import JikenAPIError, JikenAuthError, JikenRequestError
-from jiken.models import SearchCondition, Transaction
+from jiken.models import SearchCondition, TradePrice, Transaction
 
 
 class JikenClient:
@@ -139,7 +139,7 @@ class JikenClient:
                 return None
 
         return Transaction(
-            transaction_price=to_int(item.get("TradePrice")) or 0,
+            transaction_price=TradePrice(amount_jpy=to_int(item.get("TradePrice")) or 0),
             area=to_float(item.get("Area")) or 0.0,
             unit_price=to_float(item.get("UnitPrice")),
             prefecture=item.get("Prefecture", ""),

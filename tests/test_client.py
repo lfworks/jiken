@@ -10,7 +10,7 @@ from parameterized import parameterized
 
 from jiken.client import JikenClient
 from jiken.exceptions import JikenAPIError, JikenAuthError, JikenRequestError
-from jiken.models import SearchCondition
+from jiken.models import SearchCondition, TradePrice
 
 
 class TestJikenClient:
@@ -180,7 +180,7 @@ class TestJikenClient:
 
         transaction = client._parse_transaction_item(item)
 
-        assert transaction.transaction_price == 50000000
+        assert transaction.transaction_price == TradePrice(amount_jpy=50000000)
         assert transaction.area == 100.5
         assert transaction.unit_price == 1500000.0
         assert transaction.prefecture == "Tokyo"
@@ -215,7 +215,7 @@ class TestJikenClient:
 
         transaction = client._parse_transaction_item(item)
 
-        assert transaction.transaction_price == 30000000
+        assert transaction.transaction_price == TradePrice(amount_jpy=30000000)
         assert transaction.area == 80.0
         assert transaction.unit_price is None
         assert transaction.prefecture == "Osaka"
@@ -277,8 +277,8 @@ class TestJikenClient:
         transactions = client._parse_transactions(data)
 
         assert len(transactions) == 2
-        assert transactions[0].transaction_price == 50000000
-        assert transactions[1].transaction_price == 30000000
+        assert transactions[0].transaction_price == TradePrice(amount_jpy=50000000)
+        assert transactions[1].transaction_price == TradePrice(amount_jpy=30000000)
 
     @patch("jiken.client.urlopen")
     def test_search_transactions_integration(self, mock_urlopen: Mock) -> None:
@@ -315,5 +315,5 @@ class TestJikenClient:
         transactions = client.search_transactions(condition)
 
         assert len(transactions) == 1
-        assert transactions[0].transaction_price == 50000000
+        assert transactions[0].transaction_price == TradePrice(amount_jpy=50000000)
         assert transactions[0].prefecture == "Tokyo"
