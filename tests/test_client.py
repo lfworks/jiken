@@ -8,20 +8,20 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from parameterized import parameterized
 
-from jiken.client import ReinfoLibClient
-from jiken.exceptions import ReinfoLibAPIError, ReinfoLibAuthError, ReinfoLibRequestError
+from jiken.client import JikenClient
+from jiken.exceptions import JikenAPIError, JikenAuthError, JikenRequestError
 from jiken.models import SearchCondition
 
 
-class TestReinfoLibClient:
-    """Tests for ReinfoLibClient."""
+class TestJikenClient:
+    """Tests for JikenClient."""
 
     def test_init(self) -> None:
-        client = ReinfoLibClient(api_key="test-api-key")
+        client = JikenClient(api_key="test-api-key")
         assert client._api_key == "test-api-key"
 
     def test_build_params_with_area_only(self) -> None:
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         condition = SearchCondition(year=2024, area="13")
 
         params = client._build_params(condition)
@@ -33,7 +33,7 @@ class TestReinfoLibClient:
         assert "quarter" not in params
 
     def test_build_params_with_all_fields(self) -> None:
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         condition = SearchCondition(year=2024, area="13", city="13101", quarter=1, language="ja")
 
         params = client._build_params(condition)
@@ -54,7 +54,7 @@ class TestReinfoLibClient:
         mock_response.__exit__.return_value = None
         mock_urlopen.return_value = mock_response
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         params = {"year": "2024", "area": "13"}
 
         result = client._fetch_data(params)
@@ -74,7 +74,7 @@ class TestReinfoLibClient:
         mock_response.__exit__.return_value = None
         mock_urlopen.return_value = mock_response
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         params = {"year": "2024", "area": "13"}
 
         result = client._fetch_data(params)
@@ -87,10 +87,10 @@ class TestReinfoLibClient:
             url="http://test.com", code=401, msg="Unauthorized", hdrs=Message(), fp=None
         )
 
-        client = ReinfoLibClient(api_key="invalid-key")
+        client = JikenClient(api_key="invalid-key")
         params = {"year": "2024", "area": "13"}
 
-        with pytest.raises(ReinfoLibAuthError) as exc_info:
+        with pytest.raises(JikenAuthError) as exc_info:
             client._fetch_data(params)
 
         assert "Authentication failed" in str(exc_info.value)
@@ -101,10 +101,10 @@ class TestReinfoLibClient:
             url="http://test.com", code=400, msg="Bad Request", hdrs=Message(), fp=None
         )
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         params = {"year": "invalid"}
 
-        with pytest.raises(ReinfoLibRequestError) as exc_info:
+        with pytest.raises(JikenRequestError) as exc_info:
             client._fetch_data(params)
 
         assert "Invalid request parameters" in str(exc_info.value)
@@ -122,10 +122,10 @@ class TestReinfoLibClient:
             url="http://test.com", code=status_code, msg=msg, hdrs=Message(), fp=None
         )
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         params = {"year": "2024", "area": "13"}
 
-        with pytest.raises(ReinfoLibAPIError) as exc_info:
+        with pytest.raises(JikenAPIError) as exc_info:
             client._fetch_data(params)
 
         assert f"status {status_code}" in str(exc_info.value)
@@ -134,10 +134,10 @@ class TestReinfoLibClient:
     def test_fetch_data_url_error(self, mock_urlopen: Mock) -> None:
         mock_urlopen.side_effect = urllib.error.URLError("Connection refused")
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         params = {"year": "2024", "area": "13"}
 
-        with pytest.raises(ReinfoLibAPIError) as exc_info:
+        with pytest.raises(JikenAPIError) as exc_info:
             client._fetch_data(params)
 
         assert "Failed to connect to API" in str(exc_info.value)
@@ -151,16 +151,16 @@ class TestReinfoLibClient:
         mock_response.__exit__.return_value = None
         mock_urlopen.return_value = mock_response
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         params = {"year": "2024", "area": "13"}
 
-        with pytest.raises(ReinfoLibAPIError) as exc_info:
+        with pytest.raises(JikenAPIError) as exc_info:
             client._fetch_data(params)
 
         assert "Failed to parse API response" in str(exc_info.value)
 
     def test_parse_transaction_item(self) -> None:
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
 
         item = {
             "TradePrice": "50000000",
@@ -195,7 +195,7 @@ class TestReinfoLibClient:
         assert transaction.transaction_period == "2024Q1"
 
     def test_parse_transaction_item_with_none_values(self) -> None:
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
 
         item = {
             "TradePrice": "30000000",
@@ -230,14 +230,14 @@ class TestReinfoLibClient:
         assert transaction.transaction_period == "2024Q2"
 
     def test_parse_transactions_empty_data(self) -> None:
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
 
         result = client._parse_transactions({})
 
         assert result == []
 
     def test_parse_transactions_with_data(self) -> None:
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
 
         data = {
             "data": [
@@ -309,7 +309,7 @@ class TestReinfoLibClient:
         mock_response.__exit__.return_value = None
         mock_urlopen.return_value = mock_response
 
-        client = ReinfoLibClient(api_key="test-key")
+        client = JikenClient(api_key="test-key")
         condition = SearchCondition(year=2024, area="13", quarter=1)
 
         transactions = client.search_transactions(condition)

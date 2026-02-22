@@ -1,20 +1,20 @@
 __version__ = "0.1.0"
 
-from jiken.client import ReinfoLibClient
+from jiken.client import JikenClient
 from jiken.exceptions import (
-    ReinfoLibAPIError,
-    ReinfoLibAuthError,
-    ReinfoLibError,
-    ReinfoLibRequestError,
+    JikenAPIError,
+    JikenAuthError,
+    JikenError,
+    JikenRequestError,
 )
 from jiken.models import SearchCondition, Transaction
 
 __all__ = [
-    "ReinfoLibClient",
+    "JikenClient",
     "SearchCondition",
     "Transaction",
-    "ReinfoLibError",
-    "ReinfoLibAuthError",
-    "ReinfoLibRequestError",
-    "ReinfoLibAPIError",
+    "JikenError",
+    "JikenAuthError",
+    "JikenRequestError",
+    "JikenAPIError",
 ]

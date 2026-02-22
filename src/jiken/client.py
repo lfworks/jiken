@@ -5,11 +5,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from jiken.exceptions import ReinfoLibAPIError, ReinfoLibAuthError, ReinfoLibRequestError
+from jiken.exceptions import JikenAPIError, JikenAuthError, JikenRequestError
 from jiken.models import SearchCondition, Transaction
 
 
-class ReinfoLibClient:
+class JikenClient:
     _API_BASE_URL = "https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001"
 
     def __init__(self, api_key: str) -> None:
@@ -62,9 +62,9 @@ class ReinfoLibClient:
             Parsed JSON response data
 
         Raises:
-            ReinfoLibAuthError: Authentication failed (401)
-            ReinfoLibRequestError: Invalid request parameters (400)
-            ReinfoLibAPIError: API error occurred
+            JikenAuthError: Authentication failed (401)
+            JikenRequestError: Invalid request parameters (400)
+            JikenAPIError: API error occurred
         """
         url = f"{self._API_BASE_URL}?{urlencode(params)}"
 
@@ -82,15 +82,15 @@ class ReinfoLibClient:
 
         except HTTPError as e:
             if e.code == 401:
-                raise ReinfoLibAuthError("Authentication failed. Check your API key.") from e
+                raise JikenAuthError("Authentication failed. Check your API key.") from e
             elif e.code == 400:
-                raise ReinfoLibRequestError(f"Invalid request parameters: {e.reason}") from e
+                raise JikenRequestError(f"Invalid request parameters: {e.reason}") from e
             else:
-                raise ReinfoLibAPIError(f"API error occurred (status {e.code}): {e.reason}") from e
+                raise JikenAPIError(f"API error occurred (status {e.code}): {e.reason}") from e
         except URLError as e:
-            raise ReinfoLibAPIError(f"Failed to connect to API: {e.reason}") from e
+            raise JikenAPIError(f"Failed to connect to API: {e.reason}") from e
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
-            raise ReinfoLibAPIError("Failed to parse API response") from e
+            raise JikenAPIError("Failed to parse API response") from e
 
     def _parse_transactions(self, data: dict[str, Any]) -> list[Transaction]:
         """Parse API response data to Transaction objects.

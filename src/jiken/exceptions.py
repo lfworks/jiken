@@ -1,14 +1,14 @@
-class ReinfoLibError(Exception):
-    """Base exception for ReinfoLib errors."""
+class JikenError(Exception):
+    """Base exception for jiken errors."""
 
 
-class ReinfoLibAuthError(ReinfoLibError):
+class JikenAuthError(JikenError):
     """Authentication error (401 Unauthorized)."""
 
 
-class ReinfoLibRequestError(ReinfoLibError):
+class JikenRequestError(JikenError):
     """Invalid request parameters (400 Bad Request)."""
 
 
-class ReinfoLibAPIError(ReinfoLibError):
+class JikenAPIError(JikenError):
     """General API error (5xx)."""
