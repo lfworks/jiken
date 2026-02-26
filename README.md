@@ -74,6 +74,12 @@ condition = SearchCondition(
 transactions = client.search_transactions(condition)
 ```
 
+## Examples
+
+| Notebook | Description |
+|----------|-------------|
+| [Map Visualization](examples/map_visualization.ipynb) | Plot real estate transactions on an interactive map using pandas, geopy, and plotly |
+
 ## API Reference
 
 ### `JikenClient`
