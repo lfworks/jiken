@@ -111,7 +111,7 @@ min_confidence = 80
 
 # Ty configuration
 [tool.ty.src]
-exclude = ["*.ipynb"]
+exclude = ["**/*.ipynb"]
 # It will use type hints to check your code
 
 # Yamlfix configuration
