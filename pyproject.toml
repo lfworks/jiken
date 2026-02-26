@@ -110,8 +110,8 @@ exclude_lines = [
 min_confidence = 80
 
 # Ty configuration
-[tool.ty]
-# ty is a fast type checker from Astral
+[tool.ty.src]
+exclude = ["*.ipynb"]
 # It will use type hints to check your code
 
 # Yamlfix configuration
